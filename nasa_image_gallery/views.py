@@ -4,11 +4,26 @@
 from django.shortcuts import redirect, render
 from .layers.services import services_nasa_image_gallery
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate, login
+from django.contrib import messages
 
 # función que invoca al template del índice de la aplicación.
 def index_page(request):
     return render(request, 'index.html')
+
+def login_page(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, "Credenciales inválidas")
+            return redirect('login')
+    elif request.method == "GET":
+        return render(request, 'registration/login.html')
 
 # auxiliar: retorna 2 listados -> uno de las imágenes de la API y otro de los favoritos del usuario.
 def getAllImagesAndFavouriteList(request):
@@ -54,6 +69,11 @@ def saveFavourite(request):
 def deleteFavourite(request):
     pass
 
+
+@login_required
+def logout_user(request):
+    logout(request)
+    return redirect('home')
 
 @login_required
 def exit(request):
