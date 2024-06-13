@@ -4,7 +4,7 @@
 from django.shortcuts import redirect, render
 from .layers.services import services_nasa_image_gallery
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth import logout
 from django.contrib import messages
 
 # función que invoca al template del índice de la aplicación.
@@ -12,24 +12,14 @@ def index_page(request):
     return render(request, 'index.html')
 
 def login_page(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, "Credenciales inválidas")
-            return redirect('login')
-    elif request.method == "GET":
         return render(request, 'registration/login.html')
 
 # auxiliar: retorna 2 listados -> uno de las imágenes de la API y otro de los favoritos del usuario.
 def getAllImagesAndFavouriteList(request):
     fetchImages = services_nasa_image_gallery.getAllImages()
     images = fetchImages
-    favourite_list = []
+    favourites = services_nasa_image_gallery.getAllFavouritesByUser(request)
+    favourite_list = favourites
 
     return images, favourite_list
 
@@ -56,25 +46,22 @@ def search(request):
 # las siguientes funciones se utilizan para implementar la sección de favoritos: traer los favoritos de un usuario, guardarlos, eliminarlos y desloguearse de la app.
 @login_required
 def getAllFavouritesByUser(request):
-    favourite_list = []
+    favourite_list =  services_nasa_image_gallery.getAllFavouritesByUser(request)
     return render(request, 'favourites.html', {'favourite_list': favourite_list})
 
 
 @login_required
 def saveFavourite(request):
-    pass
+    services_nasa_image_gallery.saveFavourite(request)
+    return redirect('home')
 
 
 @login_required
 def deleteFavourite(request):
-    pass
-
-
-@login_required
-def logout_user(request):
-    logout(request)
-    return redirect('home')
+    services_nasa_image_gallery.deleteFavourite(request)
+    return redirect('favoritos')
 
 @login_required
 def exit(request):
-    pass
+    logout(request)
+    return redirect('home')
