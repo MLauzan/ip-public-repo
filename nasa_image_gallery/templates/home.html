@@ -1,12 +1,19 @@
 {% extends 'header.html' %} {% block content %}
 <main>
-    <h1 class="text-center">Galería de Imágenes de la NASA</h1>
+
+    {% if error %}
+    <div class="alert alert-danger m-auto text-center" role="alert" style="max-width: 90%; width: 700px;">
+        {{ error }}{{request.GET.query}}
+    </div>
+    {% else %}
+
+    <h1 class="text-center">Galería de Imágenes de la NASA de</h1>
+
     <div class="d-flex justify-content-center" style="margin-bottom: 1%">
         <!-- Buscador del sitio -->
-        <form class="d-flex" action="{% url 'buscar' %}" method="POST">
-            {% csrf_token %}
-            <input class="form-control me-2" type="search" name="query" placeholder="Escribí una palabra"
-                aria-label="Search">
+        <form class="d-flex" action="{% url 'buscar' %}" method="get">
+            <input class="form-control me-2" type="search" value="{{ query }}" name="query"
+                placeholder="Escribí una palabra" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Buscar</button>
         </form>
     </div>
@@ -15,11 +22,11 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for imagen in images %}
         <div class="col">
-            <div class="card">
-                <img src="{{ imagen.image_url}}" class="card-img-top" alt="imagen">
+            <div class="card h-100">
+                <img src="{{ imagen.image_url }}" class="card-img-top" alt="imagen">
                 <div class="card-body">
-                    <h5 class="card-title">{{ imagen.title}}</h5>
-                    <p class="card-text">{{ imagen.description}}</p>
+                    <h5 class="card-title">{{ imagen.title }}</h5>
+                    <p class="card-text truncate-text">{{ imagen.description }}</p>
                 </div>
                 {% if request.user.is_authenticated %}
                 <div class="card-footer text-center">
@@ -35,7 +42,6 @@
                         <button type="submit" class="btn btn-primary btn-sm float-left" style="color:white">❤️ Añadir a
                             favoritos</button>
                         {% endif %}
-
                     </form>
                 </div>
                 {% endif %}
@@ -43,5 +49,40 @@
         </div>
         {% endfor %}
     </div>
+
+
+    <form class="pagination" action="{% url 'buscar' %}" method="get">
+
+        {% if request.GET.page == '1' or not request.GET.page %}
+        <input name="page" value="{{ 1 }}" type="submit" class="bg-primary">
+        {% else %}
+        <input name="page" value="{{ 1 }}" type="submit" class="bg-light">
+        {% endif %}
+
+        <input value="..." type="submit" disabled class="bg-light">
+        {% for page in previous_pages %}
+        <input name="page" value="{{ page }}" type="submit" class="bg-light">
+        {% endfor %}
+
+        {% if request.GET.page and request.GET.page != '' and request.GET.page != '1' and request.GET.page != pages %}
+        <input name="page" class="bg-primary" value="{{ request.GET.page }}" type="submit" disabled>
+        {% endif %}
+
+        {% for page in next_pages %}
+        <input name="page" value="{{ page }}" type="submit" class="bg-light">
+        {% endfor %}
+        <input value="..." type="submit" disabled class="bg-light">
+
+        {% if request.GET.page and request.GET.page == pages %}
+        <input name="page" value="{{ pages }}" type="submit" class="bg-primary">
+        {% else %}
+        <input name="page" value="{{ pages }}" type="submit" class="bg-light">
+        {% endif %}
+
+        <input name="query" type="hidden" value="{{ query }}" class="bg-light">
+    </form>
+    
+    {% endif %}
+
 </main>
 {% endblock %}

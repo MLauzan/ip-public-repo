@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from .layers.services import services_nasa_image_gallery
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.contrib import messages
+from .layers.generic.utils import *
 
 # función que invoca al template del índice de la aplicación.
 def index_page(request):
@@ -15,34 +15,44 @@ def login_page(request):
         return render(request, 'registration/login.html')
 
 # auxiliar: retorna 2 listados -> uno de las imágenes de la API y otro de los favoritos del usuario.
-def getAllImagesAndFavouriteList(request, input):
-    fetchImages = services_nasa_image_gallery.getAllImages(input)
-    images = fetchImages
+def getAllImagesAndFavouriteList(request, input, page):
+    fetchImages = services_nasa_image_gallery.getAllImages(input, page)
+    images = fetchImages[0]
+    pages  = fetchImages[1]
     favourites = services_nasa_image_gallery.getAllFavouritesByUser(request)
     favourite_list = favourites
 
-    return images, favourite_list
+    return images, favourite_list, pages
 
 # función principal de la galería.
 def home(request):
-    # llama a la función auxiliar getAllImagesAndFavouriteList() y obtiene 2 listados: uno de las imágenes de la API y otro de favoritos por usuario*.
-    # (*) este último, solo si se desarrolló el opcional de favoritos; caso contrario, será un listado vacío [].
-    fetchImagesAndFavourites = getAllImagesAndFavouriteList(request, input=None)
+    page = request.GET.get('page') or '1'
+    fetchImagesAndFavourites = getAllImagesAndFavouriteList(request, input=None, page=page)
     
     images = fetchImagesAndFavourites[0]
     favourite_list = fetchImagesAndFavourites[1]
-    return render(request, 'home.html', {'images': images, 'favourite_list': favourite_list} )
+
+    pages = int(fetchImagesAndFavourites[2])
+    previous_pages= getPreviousPages(int(page))
+    next_pages = getNextPages(int(page), pages)
+
+    return render(request, 'home.html', {'images': images, 'favourite_list': favourite_list, 'query': 'space', 'pages': pages, 'previous_pages' : previous_pages, 'next_pages' : next_pages} )
 
 
 # función utilizada en el buscador.
 def search(request):
-    search_msg = request.POST.get('query', '')
-    if not search_msg:
-        search_msg ='space'
-    images, favourite_list = getAllImagesAndFavouriteList(request, search_msg)
+    search_msg = request.GET.get('query') or 'space'
+    page = request.GET.get('page') or '1'
 
-    # si el usuario no ingresó texto alguno, debe refrescar la página; caso contrario, debe filtrar aquellas imágenes que posean el texto de búsqueda.
-    return render(request, 'home.html', {'images': images, 'favourite_list': favourite_list} )
+    images, favourite_list, pages = getAllImagesAndFavouriteList(request, search_msg, page)
+
+    if not images:
+        return render(request, 'home.html', {'error': 'No se encontraron imágenes para '} )
+
+    previous_pages= getPreviousPages(int(page))
+    next_pages = getNextPages(int(page), pages)    
+
+    return render(request, 'home.html', {'images': images, 'favourite_list': favourite_list, 'query': search_msg, 'pages': str(pages), 'previous_pages' : previous_pages, 'next_pages' : next_pages} )
 
 
 # las siguientes funciones se utilizan para implementar la sección de favoritos: traer los favoritos de un usuario, guardarlos, eliminarlos y desloguearse de la app.

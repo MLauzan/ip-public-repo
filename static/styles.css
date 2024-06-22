@@ -1,3 +1,9 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     color: #566787;
     background: #f5f5f5;
@@ -97,46 +103,72 @@ table.table td i {
 }
 
 .pagination {
-    float: right;
-    margin: 0 0 5px;
+    display: flex;
+    min-width: 200px;
+    max-width: fit-content;
+    margin: 30px auto;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-shadow: 0 0 2px grey;
+    flex-wrap: wrap;
 }
 
-.pagination li a {
+.pagination input[type="submit"] {
     border: none;
-    font-size: 95%;
-    width: 30px;
+    font-size: 16px;
+    width: 50px;
     height: 30px;
-    color: #999;
-    margin: 0 2px;
+    color: black;
     line-height: 30px;
-    border-radius: 30px !important;
+    border-radius: 2px;
     text-align: center;
     padding: 0;
+    margin: 5px;
+    cursor: pointer;
+    background-color: #a0a5b1;
+    transition: background-color 0.3s ease;
 }
 
-.pagination li a:hover {
-    color: #666;
+.pagination input[type="submit"]:hover {
+    background-color: rgba(160, 165, 177, 0.3);
 }
 
-.pagination li.active a {
-    background: #03A9F4;
+.pagination input[type="submit"]:active {
+    background-color: rgba(160, 165, 177, 0.6);
 }
 
-.pagination li.active a:hover {
-    background: #0397d6;
-}
-
-.pagination li.disabled i {
+.pagination input[type="submit"].disabled {
     color: #ccc;
+    cursor: not-allowed;
 }
 
-.pagination li i {
+.pagination input[type="submit"] i {
     font-size: 16px;
-    padding-top: 6px
+    padding-top: 6px;
 }
 
 .hint-text {
     float: left;
     margin-top: 6px;
     font-size: 95%;
+}
+
+.card {
+    height: 1000px;
+}
+
+.truncate-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    /* Número de líneas a mostrar antes de truncar */
+    -webkit-box-orient: vertical;
+}
+
+.m-auto {
+    margin: auto;
 }

@@ -2,23 +2,27 @@
 
 import requests
 from ...config import config
+from ..generic.utils import pagesQuantity
 
 # comunicación con la REST API de la NASA.
-def getAllImages(input=None):
+def getAllImages(input=None, page='1'):
     if input is None:
-        json_response = requests.get(config.NASA_REST_API_DEFAULT_SEARCH).json()
+        json_response = requests.get(config.NASA_REST_API_DEFAULT_SEARCH + '&page=' + page +'&page_size=5').json()
     else:
-        json_response = requests.get(config.NASA_REST_API + input).json()
+        json_response = requests.get(config.NASA_REST_API + input + '&page=' + page +'&page_size=5').json()
 
     json_collection = []
+    
+    pages = pagesQuantity(json_response['collection']['metadata']['total_hits'])
+            
     for object in json_response['collection']['items']:
         try:
-            if 'links' in object:  # verificar si la clave 'links' está presente en el objeto (sin 'links' NO nos sirve, ya que no mostrará las imágenes).
-                json_collection.append(object)
-            else:
-                print("[Capa de transporte --> transport.py]: se encontró un objeto sin clave 'links', omitiendo...")
+            if 'links' not in object:
+                object['links'] = [{'href': 'https://w7.pngwing.com/pngs/707/497/png-transparent-globe-world-map-earth-globe-miscellaneous-globe-grey.png'}]
+  
+            json_collection.append(object)
 
-        except KeyError: # puede ocurrir que no todos los objetos tenga la info. completa, en ese caso descartamos dicho objeto y seguimos con el siguiente en la próxima iteración.
+        except KeyError:
             pass
 
-    return json_collection
+    return json_collection, pages
