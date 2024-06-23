@@ -1,13 +1,15 @@
 {% extends 'header.html' %} {% block content %}
-<main>
+<main style="padding-bottom: 1px; height: 100%; background: url('https://cdn.pixabay.com/photo/2011/12/14/12/23/solar-system-11111_1280.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
 
-    {% if error %}
-    <div class="alert alert-danger m-auto text-center" role="alert" style="max-width: 90%; width: 700px;">
-        {{ error }}{{request.GET.query}}
+    {% if messages %}
+    <div class="alert alert-danger mt-3 mx-auto text-center" role="alert" style="max-width: 90%; width: 400px;">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
     </div>
     {% else %}
 
-    <h1 class="text-center">Galería de Imágenes de la NASA de</h1>
+    <h1 class="text-center text-light">Galería de Imágenes de la NASA de: {{ query }}</h1>
 
     <div class="d-flex justify-content-center" style="margin-bottom: 1%">
         <!-- Buscador del sitio -->
@@ -19,7 +21,7 @@
     </div>
 
 
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row row-cols-1 row-cols-md-3 g-4" style="margin: auto; width: 95%;">
         {% for imagen in images %}
         <div class="col">
             <div class="card h-100">
@@ -39,7 +41,7 @@
                         {% if imagen in favourite_list %}
                         <button type="submit" class="btn btn-primary btn-sm float-left" style="color:white" disabled>✔️
                             Ya está añadida a favoritos</button> {% else %}
-                        <input type="text" name="comment">
+                        <input type="text" name="comment" style="font-size: revert; margin: 2px;">
                         <button type="submit" class="btn btn-primary btn-sm float-left" style="color:white">❤️ Añadir a
                             favoritos</button>
                         {% endif %}

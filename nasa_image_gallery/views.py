@@ -3,6 +3,7 @@
 
 from django.shortcuts import redirect, render
 from .layers.services import services_nasa_image_gallery
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from .layers.generic.utils import *
@@ -47,7 +48,8 @@ def search(request):
     images, favourite_list, pages = getAllImagesAndFavouriteList(request, search_msg, page)
 
     if not images:
-        return render(request, 'home.html', {'error': 'No se encontraron imágenes para '} )
+        messages.error(request, "No se encontraron imágenes para: " + search_msg)
+        return redirect('home')
 
     previous_pages= getPreviousPages(int(page))
     next_pages = getNextPages(int(page), pages)    

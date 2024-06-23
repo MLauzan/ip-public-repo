@@ -9,6 +9,5 @@ def login_user(request):
         if user is not None:
             login(request, user)
             return redirect('home')
-        else:
-            messages.error(request, "Credenciales inválidas")
-            return redirect('login')
+        messages.error(request, "Credenciales inválidas")
+        return redirect('login')

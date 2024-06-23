@@ -18,7 +18,7 @@ def getAllImages(input=None, page='1'):
     for object in json_response['collection']['items']:
         try:
             if 'links' not in object:
-                object['links'] = [{'href': 'https://w7.pngwing.com/pngs/707/497/png-transparent-globe-world-map-earth-globe-miscellaneous-globe-grey.png'}]
+                object['links'] = [{'href': '/static/images/Tierra.png'}]
   
             json_collection.append(object)
 

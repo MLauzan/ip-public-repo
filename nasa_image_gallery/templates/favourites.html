@@ -1,7 +1,8 @@
 {% extends 'header.html' %} {% block content %}
-<div class="container-xl">
-    <div class="table-responsive">
-        <div class="table-wrapper">
+<div
+    style="height: 100vh; background: url('https://cdn.pixabay.com/photo/2011/12/14/12/23/solar-system-11111_1280.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+    <div class="container-xl pt-4">
+        <div class="table-wrapper table-secondary">
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-8">
@@ -25,16 +26,20 @@
                     {% for favorito in favourite_list %}
                     <tr>
                         <td>-</td>
-                        <td><img src="{{ favorito.image_url }}" alt="" style="max-width: 200px; max-height: 200px;"></td>
+                        <td><img src="{{ favorito.image_url }}" alt="" style="max-width: 200px; max-height: 200px;">
+                        </td>
                         <td>{{ favorito.title }}</td>
-                        <td><p class="truncate-text">{{ favorito.description }}</p></td>
+                        <td>
+                            <p class="truncate-text">{{ favorito.description }}</p>
+                        </td>
                         <td>{{ favorito.date }}</td>
                         <td>{{ favorito.comment }}</td>
                         <td>
                             <form method="post" action="{% url 'borrar-favorito' %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="id" value="{{ favorito.id }}">
-                                <button type="submit" class="btn" style="color:red"><i class="material-icons">&#xE872;</i></button>
+                                <button type="submit" class="btn" style="color:red"><i
+                                        class="material-icons">&#xE872;</i></button>
                             </form>
                         </td>
                     </tr>

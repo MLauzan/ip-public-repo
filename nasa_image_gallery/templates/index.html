@@ -1,9 +1,14 @@
-{% extends 'header.html' %} {% block content %} {% if request.user.is_authenticated %}
-<h2 class="text-center">Bienvenido {{ user.username | upper }}!</h2>
-{% else %}
-<h2 class="text-center">Bienvenido!</h2>
-{% endif %}
-<p class="text-center">
-    Mirá las imágenes desde <a href="{% url 'home' %}">este link.</a>
-</p>
+{% extends 'header.html' %} {% block content %}
+<div
+    style="height: 100vh; background: url('https://content.nationalgeographic.com.es/medio/2022/07/07/los-planetas-del-sistema-solar_ad120a4d_1200x630.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+    {% if request.user.is_authenticated %}
+
+    <h2 class="text-center text-light">Bienvenido {{ user.username | upper }}!</h2>
+    {% else %}
+    <h2 class="text-center text-light">Bienvenido!</h2>
+    {% endif %}
+    <p class="text-center text-light">
+        Mirá las imágenes desde <a href="{% url 'home' %}">este link.</a>
+    </p>
+</div>
 {% endblock %}
