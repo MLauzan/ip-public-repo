@@ -44,3 +44,5 @@ def create_user(request):
         except Exception as e:
             messages.error(request, f"No se pudo crear el usuario: {str(e)}")
             return redirect("create_page")
+        messages.error(request, "Credenciales inválidas")
+        return redirect('login')
