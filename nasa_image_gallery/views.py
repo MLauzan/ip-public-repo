@@ -77,3 +77,6 @@ def deleteFavourite(request):
 def exit(request):
     logout(request)
     return redirect('home')
+
+def create_page(request):
+     return render(request,"registration/register.html")
