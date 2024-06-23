@@ -10,9 +10,8 @@ def login_user(request):
         if user is not None:
             login(request, user)
             return redirect('home')
-        else:
-            messages.error(request, "Credenciales inválidas")
-            return redirect('login')
+        messages.error(request, "Credenciales inválidas")
+        return redirect('login')
         
 def create_user(request):
         username = request.POST.get('username')
@@ -44,5 +43,4 @@ def create_user(request):
         except Exception as e:
             messages.error(request, f"No se pudo crear el usuario: {str(e)}")
             return redirect("create_page")
-        messages.error(request, "Credenciales inválidas")
-        return redirect('login')
+      
