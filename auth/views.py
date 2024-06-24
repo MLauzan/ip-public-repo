@@ -2,6 +2,8 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from main.settings import EMAIL_HOST_USER
 
 def login_user(request):
         username = request.POST['username']
@@ -24,11 +26,9 @@ def create_user(request):
             messages.error(request, "Los campos username, password y email son obligatorios")
             return redirect("create_page")
         
-        
         if User.objects.filter(username=username).exists():
             messages.error(request, "El usuario ya se encuentra registrado")
             return redirect("create_page")
-        
         
         try:
             User.objects.create_user(
@@ -38,7 +38,13 @@ def create_user(request):
                 first_name=first_name,
                 last_name=last_name
             )
-            messages.success(request, "Usuario creado con éxito")
+            subject = 'Credenciales de acceso'
+            message= f'Usuario: {username}, contraseña: {password}'
+            recipient = email.strip()
+            
+            send_mail(subject, message, EMAIL_HOST_USER, [recipient], fail_silently=False)
+            
+            messages.success(request, f"Usuario creado con éxito, enviamos tus credenciales a {email}")
             return redirect("create_page")
         except Exception as e:
             messages.error(request, f"No se pudo crear el usuario: {str(e)}")

@@ -7,20 +7,35 @@ def pagesQuantity(imagesQuantity):
         
     return math.ceil(pages)
 
-def getPreviousPages(numero):
-    numeros_antecesores = []
-    for i in range(numero - 1, 1, -1):
-        if i > 1 and len(numeros_antecesores) < 5:
-            numeros_antecesores.append(i)
-    if not numeros_antecesores:
+def getPreviousPages(number):
+    previousNumbers = []
+    for i in range(number - 1, 1, -1):
+        if i > 1 and len(previousNumbers) < 5:
+            previousNumbers.append(i)
+    if not previousNumbers:
         return None
-    return numeros_antecesores[::-1]
+    return previousNumbers[::-1]
 
-def getNextPages(numero_actual, limite_superior):
-    numeros_proximos = []
-    for i in range(numero_actual + 1, limite_superior):
-        numeros_proximos.append(i)
-        if len(numeros_proximos) >= 5:
+def getNextPages(number, limit):
+    nextNumbers = []
+    for i in range(number + 1, limit):
+        nextNumbers.append(i)
+        if len(nextNumbers) >= 5:
             break
     
-    return numeros_proximos
+    return nextNumbers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
